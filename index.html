@@ -169,59 +169,67 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact">
+    <section id="contact" >
         <h2>Contact Me</h2>
-        <form id="contact-form">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required>
-
-            <label for="number">Number:</label>
-            <input type="text" id="number" name="number" required>
-            
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-            
-            <label for="message">Message:</label>
-            <textarea id="message" name="message" rows="5" required></textarea>
-            
+        <form id="contactForm">
+            <h3>Contact Form</h3>
+            <input type="text" id="name" placeholder="Your Name" required />
+            <input type="tel" id="number" placeholder="Your Mobile Number" required />
+            <input type="email" id="email" placeholder="Your Email" required />
+            <input type="text" id="message" placeholder="Your Message" required />
             <button type="submit">Send</button>
-        </form>
+          </form>
      </section>
 
 
 
      <!--js part to send a post request to the /api/contact endpoitn-->
-     <script>
-        document.getElementById('contact-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-        
-            const formData = {
-                name: document.getElementById('name').value,
-                number: document.getElementById('number').value,
-                email: document.getElementById('email').value,
-                message: document.getElementById('message').value,
-            };
-        
-            try {
-                const response = await fetch('/api/contact', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData),
-                });
-        
-                const result = await response.json();
-        
-                if (result.success) {
-                    alert('Form submitted successfully!');
-                    document.getElementById('contact-form').reset();
-                } else {
-                    alert(result.error || 'Form submission failed.');
-                }
-            } catch (error) {
-                alert('An error occurred. Please try again later.');
-            }
-        });
-        </script>
+   
+       <!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+<script>
+  // Your Firebase Config
+  const firebaseConfig = {
+    apiKey: "AIzaSyDYMgFNvWIPduPDCwuKEcocBw-PEb3EKhU",
+    authDomain: "database-of-portfolio.firebaseapp.com",
+    databaseURL: "https://database-of-portfolio-default-rtdb.firebaseio.com",
+    projectId: "database-of-portfolio",
+    storageBucket: "database-of-portfolio.firebasestorage.app",
+    messagingSenderId: "930745319437",
+    appId: "1:930745319437:web:83d23de6178a92ab6f5544"
+  
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+
+  // Form submission
+  document.getElementById("contactForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value;
+    const number = document.getElementById("number").value;
+    const email = document.getElementById("email").value;
+    const message = document.getElementById("message").value;
+
+    // Save data to Firebase
+    const newRef = database.ref("contacts").push();
+    newRef.set({
+      name: name,
+      number: number,
+      email: email,
+      message: message
+    }).then(() => {
+      alert("Message sent successfully!");
+      document.getElementById("contactForm").reset();
+    }).catch((error) => {
+      alert("Error: " + error.message);
+    });
+  });
+
     
         <!-- Contact Info Section -->
         <div class="contact-info">
